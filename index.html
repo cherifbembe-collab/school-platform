@@ -1,261 +1,293 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>المنصة المدرسية الشاملة - لوحة التحكم</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-    :root {
-      --bg-color: #f4f7fe;
-      --sidebar-bg: #ffffff;
-      --primary-color: #4318ff;
-      --text-main: #2b3674;
-      --text-muted: #a3edd1;
-    }
-    body { background-color: var(--bg-color); color: var(--text-main); display: flex; min-height: 100vh; }
-    
-    /* القائمة الجانبية */
-    .sidebar { width: 260px; background: var(--sidebar-bg); padding: 20px; display: flex; flex-direction: column; gap: 10px; border-left: 1px solid #e9edf7; }
-    .sidebar h2 { color: var(--primary-color); text-align: center; font-size: 20px; margin-bottom: 15px; }
-    .nav-btn { background: none; border: none; padding: 12px 15px; text-align: right; font-size: 15px; font-weight: 500; color: #707ebe; cursor: pointer; border-radius: 10px; transition: 0.3s; width: 100%; }
-    .nav-btn.active, .nav-btn:hover { background: var(--primary-color); color: #fff; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة الإدارة المدرسية</title>
 
-    /* المحتوى الرئيسي */
-    .main-content { flex: 1; padding: 25px; overflow-y: auto; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    
-    /* شبكة الإحصائيات */
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
-    .stat-card { background: #fff; padding: 18px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-    .stat-card h4 { color: #8f9bba; font-size: 13px; margin-bottom: 8px; }
-    .stat-card p { font-size: 24px; font-weight: bold; color: var(--text-main); }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    /* أجزاء العرض والنموذج */
-    .data-section { background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 20px; }
-    .data-section h3 { margin-bottom: 15px; font-size: 18px; }
-    
-    .admin-form { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-    .admin-form input, .admin-form select { padding: 10px 12px; border: 1px solid #e0e5f2; border-radius: 8px; font-size: 14px; flex: 1; min-width: 180px; }
-    
-    .btn-add { background: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-    .btn-delete { background: #ffe2e5; color: #f64e60; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
-    
-    table { width: 100%; border-collapse: collapse; text-align: right; }
-    th, td { padding: 12px; border-bottom: 1px solid #e9edf7; font-size: 14px; }
-    th { color: #8f9bba; }
-    
-    .section-view { display: none; }
-    .section-view.active { display: block; }
-  </style>
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:Arial,Tahoma,sans-serif;
+    background:#f4f6f9;
+    color:#1f2937;
+}
+header{
+    background:#0f766e;
+    color:white;
+    padding:18px;
+    text-align:center;
+    box-shadow:0 2px 8px #0002;
+}
+header h1{margin:0;font-size:23px}
+header p{margin:7px 0 0;font-size:13px}
+
+.container{
+    max-width:1250px;
+    margin:auto;
+    padding:15px;
+}
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:12px;
+    margin-bottom:20px;
+}
+
+.stat{
+    background:white;
+    border-radius:12px;
+    padding:18px;
+    box-shadow:0 2px 8px #0001;
+    text-align:center;
+}
+.stat strong{
+    display:block;
+    font-size:28px;
+    color:#0f766e;
+}
+.stat span{font-size:14px;color:#64748b}
+
+nav{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+}
+nav button{
+    border:0;
+    background:white;
+    padding:11px 15px;
+    border-radius:8px;
+    cursor:pointer;
+    box-shadow:0 1px 5px #0001;
+    font-weight:bold;
+}
+nav button.active,
+nav button:hover{
+    background:#0f766e;
+    color:white;
+}
+
+.section{
+    display:none;
+    background:white;
+    border-radius:12px;
+    padding:18px;
+    box-shadow:0 2px 8px #0001;
+}
+.section.active{display:block}
+
+.section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:15px;
+}
+.section h2{margin:0}
+
+input,select{
+    padding:11px;
+    border:1px solid #d1d5db;
+    border-radius:7px;
+    width:100%;
+}
+.search{
+    max-width:300px;
+}
+
+button.primary{
+    background:#0f766e;
+    color:white;
+    border:0;
+    padding:11px 17px;
+    border-radius:7px;
+    cursor:pointer;
+}
+button.danger{
+    background:#dc2626;
+    color:white;
+    border:0;
+    padding:7px 11px;
+    border-radius:6px;
+    cursor:pointer;
+}
+button.edit{
+    background:#2563eb;
+    color:white;
+    border:0;
+    padding:7px 11px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:650px;
+}
+th,td{
+    padding:11px;
+    border-bottom:1px solid #e5e7eb;
+    text-align:right;
+}
+th{
+    background:#f1f5f9;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#0008;
+    z-index:1000;
+    align-items:center;
+    justify-content:center;
+    padding:15px;
+}
+.modal.show{display:flex}
+
+.modal-box{
+    background:white;
+    width:100%;
+    max-width:550px;
+    max-height:90vh;
+    overflow:auto;
+    border-radius:12px;
+    padding:20px;
+}
+.modal-box h3{margin-top:0}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+.form-group label{
+    display:block;
+    margin-bottom:5px;
+    font-weight:bold;
+    font-size:13px;
+}
+.full{grid-column:1/-1}
+
+.modal-actions{
+    display:flex;
+    gap:8px;
+    margin-top:15px;
+}
+
+.status{
+    position:fixed;
+    left:15px;
+    bottom:15px;
+    padding:10px 15px;
+    border-radius:8px;
+    background:#111827;
+    color:white;
+    display:none;
+    z-index:2000;
+}
+.status.show{display:block}
+
+.empty{
+    text-align:center;
+    padding:30px;
+    color:#64748b;
+}
+
+@media(max-width:600px){
+    header h1{font-size:19px}
+    .form-grid{grid-template-columns:1fr}
+    .full{grid-column:auto}
+    .section{padding:12px}
+    nav button{flex:1 1 45%}
+}
+</style>
 </head>
+
 <body>
 
-  <!-- شريط القوائم الجانبية لكل الأقسام الموجودة في Supabase -->
-  <div class="sidebar">
-    <h2>منصتي المدرسية</h2>
-    <button class="nav-btn active" onclick="switchTab('dashboard', this)">الرئيسية</button>
-    <button class="nav-btn" onclick="switchTab('students', this)">الطلاب (Students)</button>
-    <button class="nav-btn" onclick="switchTab('teachers', this)">المعلمين (Teachers)</button>
-    <button class="nav-btn" onclick="switchTab('subjects', this)">المواد (Subjects)</button>
-    <button class="nav-btn" onclick="switchTab('classes', this)">الأقسام (Classes)</button>
-    <button class="nav-btn" onclick="switchTab('exams', this)">الامتحانات (Exams)</button>
-    <button class="nav-btn" onclick="switchTab('announcements', this)">الإعلانات (Announcements)</button>
-  </div>
+<header>
+    <h1>🏫 منصة الإدارة المدرسية</h1>
+    <p>إدارة المؤسسة التعليمية</p>
+</header>
 
-  <div class="main-content">
-    <div class="header">
-      <h2 id="section-title">لوحة التحكم الرئيسية</h2>
-      <span style="background: #fff; padding: 8px 15px; border-radius: 10px; font-size: 14px;">إدارة المدرسة 🏫</span>
+<div class="container">
+
+<div class="dashboard">
+    <div class="stat">
+        <strong id="countStudents">0</strong>
+        <span>التلاميذ</span>
     </div>
-
-    <!-- 1. الشاشة الرئيسية والإحصائيات -->
-    <div id="dashboard" class="section-view active">
-      <div class="stats-grid">
-        <div class="stat-card"><h4>إجمالي الطلاب</h4><p id="cnt-students">0</p></div>
-        <div class="stat-card"><h4>إجمالي المعلمين</h4><p id="cnt-teachers">0</p></div>
-        <div class="stat-card"><h4>المواد الدراسية</h4><p id="cnt-subjects">0</p></div>
-        <div class="stat-card"><h4>الصفوف والأقسام</h4><p id="cnt-classes">0</p></div>
-      </div>
-      <div class="data-section">
-        <h3>أحدث الإعلانات المدرسية</h3>
-        <tbody id="tbl-announcements-dash">جاري التحميل...</tbody>
-      </div>
+    <div class="stat">
+        <strong id="countTeachers">0</strong>
+        <span>المعلمون</span>
     </div>
-
-    <!-- 2. قائمة الطلاب -->
-    <div id="students" class="section-view">
-      <div class="data-section">
-        <h3>إضافة طالب جديد</h3>
-        <div class="admin-form">
-          <input type="text" id="student-name" placeholder="اسم الطالب الكامل...">
-          <button class="btn-add" onclick="addStudent()">+ إضافة</button>
-        </div>
-        <table>
-          <thead><tr><th>#</th><th>الاسم</th><th>الإجراء</th></tr></thead>
-          <tbody id="tbl-students"><tr><td colspan="3">جاري التحميل...</td></tr></tbody>
-        </table>
-      </div>
+    <div class="stat">
+        <strong id="countParents">0</strong>
+        <span>الآباء</span>
     </div>
-
-    <!-- 3. قائمة المعلمين -->
-    <div id="teachers" class="section-view">
-      <div class="data-section">
-        <h3>قائمة المعلمين</h3>
-        <table>
-          <thead><tr><th>#</th><th>اسم المعلم</th><th>المادة / التخصص</th></tr></thead>
-          <tbody id="tbl-teachers"><tr><td colspan="3">جاري التحميل...</td></tr></tbody>
-        </table>
-      </div>
+    <div class="stat">
+        <strong id="countSubjects">0</strong>
+        <span>المواد</span>
     </div>
-
-    <!-- 4. قائمة المواد -->
-    <div id="subjects" class="section-view">
-      <div class="data-section">
-        <h3>المواد الدراسية</h3>
-        <table>
-          <thead><tr><th>#</th><th>اسم المادة</th></tr></thead>
-          <tbody id="tbl-subjects"><tr><td colspan="2">جاري التحميل...</td></tr></tbody>
-        </table>
-      </div>
+    <div class="stat">
+        <strong id="countAnnouncements">0</strong>
+        <span>الإعلانات</span>
     </div>
+</div>
 
-    <!-- 5. قائمة الفصول والأقسام -->
-    <div id="classes" class="section-view">
-      <div class="data-section">
-        <h3>الفصول والأقسام الدراسية</h3>
-        <table>
-          <thead><tr><th>#</th><th>اسم الفصل/القسم</th></tr></thead>
-          <tbody id="tbl-classes"><tr><td colspan="2">جاري التحميل...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
+<nav>
+    <button class="active" onclick="showSection('students',this)">👨‍🎓 التلاميذ</button>
+    <button onclick="showSection('teachers',this)">👨‍🏫 المعلمون</button>
+    <button onclick="showSection('parents',this)">👪 الآباء</button>
+    <button onclick="showSection('subjects',this)">📚 المواد</button>
+    <button onclick="showSection('classes',this)">🏫 الأقسام</button>
+    <button onclick="showSection('announcements',this)">📢 الإعلانات</button>
+    <button onclick="showSection('attendance',this)">📋 الحضور</button>
+</nav>
 
-    <!-- 6. قائمة الامتحانات -->
-    <div id="exams" class="section-view">
-      <div class="data-section">
-        <h3>جدول الامتحانات</h3>
-        <table>
-          <thead><tr><th>#</th><th>عنوان الامتحان</th><th>التاريخ</th></tr></thead>
-          <tbody id="tbl-exams"><tr><td colspan="3">جاري التحميل...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
+<!-- الطلاب -->
+<section id="students" class="section active">
+<div class="section-head">
+    <h2>التلاميذ</h2>
+    <input class="search" id="studentSearch" placeholder="بحث عن تلميذ..." oninput="filterTable('students')">
+    <button class="primary" onclick="openModal('students')">＋ إضافة تلميذ</button>
+</div>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>الرقم</th>
+<th>الاسم</th>
+<th>تاريخ الميلاد</th>
+<th>الجنس</th>
+<th>اسم الولي</th>
+<th>القسم</th>
+<th>إجراءات</th>
+</tr>
+</thead>
+<tbody id="studentsBody"></tbody>
+</table>
+</div>
+</section>
 
-    <!-- 7. قائمة الإعلانات -->
-    <div id="announcements" class="section-view">
-      <div class="data-section">
-        <h3>الإعلانات المدرسية</h3>
-        <table>
-          <thead><tr><th>#</th><th>العنوان / المحتوى</th></tr></thead>
-          <tbody id="tbl-announcements"><tr><td colspan="2">جاري التحميل...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-  </div>
-
-  <script>
-    const SUPABASE_URL = 'https://ucffhkoeystfqnqqtdae.supabase.co';
-    const SUPABASE_KEY = 'Sb_publishable_1AeKLnoJSybiFDCaaSnogA_DuoTdbCK';
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // التنقل بين القوائم
-    function switchTab(tabId, btn) {
-      document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById(tabId).classList.add('active');
-      btn.classList.add('active');
-    }
-
-    // دالة معالجة النصوص الآمنة تجنباً للأخطاء
-    function getName(item) {
-      if (!item) return 'غير محدد';
-      return item.full_name || item.name || item.title || item.class_name || item.subject_name || `عنصر #${item.id}`;
-    }
-
-    // جلب تحميل جميع البيانات بمرونة عالية مع معالجة الأخطاء
-    async function loadAllData() {
-      // 1. الطلاب
-      const { data: students } = await _supabase.from('students').select('*');
-      if (students) {
-        document.getElementById('cnt-students').innerText = students.length;
-        document.getElementById('tbl-students').innerHTML = students.map(s => `
-          <tr><td>#${s.id}</td><td>${getName(s)}</td><td><button class="btn-delete" onclick="deleteRecord('students', ${s.id})">حذف 🗑️</button></td></tr>
-        `).join('') || '<tr><td colspan="3">لا توجد بيانات.</td></tr>';
-      }
-
-      // 2. المعلمين
-      const { data: teachers } = await _supabase.from('teachers').select('*');
-      if (teachers) {
-        document.getElementById('cnt-teachers').innerText = teachers.length;
-        document.getElementById('tbl-teachers').innerHTML = teachers.map(t => `
-          <tr><td>#${t.id}</td><td>${getName(t)}</td><td>${t.subject || 'عام'}</td></tr>
-        `).join('') || '<tr><td colspan="3">لا توجد بيانات.</td></tr>';
-      }
-
-      // 3. المواد
-      const { data: subjects } = await _supabase.from('subjects').select('*');
-      if (subjects) {
-        document.getElementById('cnt-subjects').innerText = subjects.length;
-        document.getElementById('tbl-subjects').innerHTML = subjects.map(sb => `
-          <tr><td>#${sb.id}</td><td>${getName(sb)}</td></tr>
-        `).join('') || '<tr><td colspan="2">لا توجد بيانات.</td></tr>';
-      }
-
-      // 4. الأقسام
-      const { data: classes } = await _supabase.from('classes').select('*');
-      if (classes) {
-        document.getElementById('cnt-classes').innerText = classes.length;
-        document.getElementById('tbl-classes').innerHTML = classes.map(c => `
-          <tr><td>#${c.id}</td><td>${getName(c)}</td></tr>
-        `).join('') || '<tr><td colspan="2">لا توجد بيانات.</td></tr>';
-      }
-
-      // 5. الامتحانات
-      const { data: exams } = await _supabase.from('exams').select('*');
-      if (exams) {
-        document.getElementById('tbl-exams').innerHTML = exams.map(e => `
-          <tr><td>#${e.id}</td><td>${getName(e)}</td><td>${e.exam_date || e.created_at || 'قريباً'}</td></tr>
-        `).join('') || '<tr><td colspan="3">لا توجد امتحانات.</td></tr>';
-      }
-
-      // 6. الإعلانات
-      const { data: announcements } = await _supabase.from('announcements').select('*');
-      if (announcements) {
-        const html = announcements.map(a => `<tr><td>#${a.id}</td><td>${getName(a)}</td></tr>`).join('');
-        document.getElementById('tbl-announcements').innerHTML = html || '<tr><td colspan="2">لا توجد إعلانات.</td></tr>';
-        document.getElementById('tbl-announcements-dash').innerHTML = html || 'لا توجد إعلانات حالية.';
-      }
-    }
-
-    // إضافة طالب
-    async function addStudent() {
-      const input = document.getElementById('student-name');
-      const val = input.value.trim();
-      if (!val) return alert('يرجى أدخل الاسم أولاً');
-
-      const { error } = await _supabase.from('students').insert([{ full_name: val }]);
-      if (error) alert('خطأ في الإضافة: ' + error.message);
-      else {
-        input.value = '';
-        loadAllData();
-      }
-    }
-
-    // حذف عنصر
-    async function deleteRecord(table, id) {
-      if (confirm('هل أنت تأكد من عملية الحذف؟')) {
-        const { error } = await _supabase.from(table).delete().eq('id', id);
-        if (error) alert('خطأ في الحذف: ' + error.message);
-        else loadAllData();
-      }
-    }
-
-    window.onload = loadAllData;
-  </script>
-</body>
-</html>
+<!-- المعلمون -->
+<section id="teachers" class="section">
+<div class="section-head">
+    <h2>المعلمون</h2>
+    <input class="search" id="teacherSearch" placeholder="بحث عن معلم..." oninput="filterTable('teachers')">
+    <button class="primary" onclick="openModal('teachers')">＋ إضافة معلم</button>
+</div>
+<div class="table-wrap">
+<table>
