@@ -1,152 +1,1178 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة المدرسة - تسجيل دخول المدير</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-    body { background-color: #f4f7fe; color: #2b3674; min-height: 100vh; display: flex; }
-    
-    /* شاشة تسجيل الدخول */
-    #login-page { position: fixed; inset: 0; background: #f4f7fe; z-index: 999; display: flex; align-items: center; justify-content: center; }
-    .login-card { background: #fff; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 90%; max-width: 380px; text-align: center; }
-    .login-card h2 { color: #4318ff; margin-bottom: 20px; }
-    .login-card input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #e9edf7; border-radius: 10px; text-align: center; font-size: 15px; }
-    .login-card button { width: 100%; padding: 12px; background: #4318ff; color: #fff; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    /* لوحة التحكم */
-    #admin-app { display: none; width: 100%; flex-direction: row; }
-    .sidebar { width: 250px; background: #fff; padding: 20px; display: flex; flex-direction: column; gap: 15px; border-left: 1px solid #e9edf7; }
-    .sidebar h2 { color: #4318ff; text-align: center; font-size: 20px; }
-    .nav-btn { background: none; border: none; padding: 12px 15px; text-align: right; font-size: 16px; color: #707ebe; cursor: pointer; border-radius: 10px; }
-    .nav-btn.active, .nav-btn:hover { background: #4318ff; color: #fff; }
-    
-    .main-content { flex: 1; padding: 30px; }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-    .stat-card { background: #fff; padding: 20px; border-radius: 15px; }
-    .stat-card p { font-size: 28px; font-weight: bold; }
-    
-    .data-section { background: #fff; padding: 25px; border-radius: 15px; }
-    table { width: 100%; border-collapse: collapse; text-align: right; margin-top: 15px; }
-    th, td { padding: 12px; border-bottom: 1px solid #e9edf7; }
-    .btn-add { background: #4318ff; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; }
-    .btn-del { background: #ffe2e5; color: #f64e60; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
-  </style>
+<title>منصة المدرسة</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Tahoma, sans-serif;
+    background: #f4f6f9;
+    color: #222;
+}
+
+header {
+    background: #17365d;
+    color: white;
+    padding: 18px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    min-height: calc(100vh - 70px);
+}
+
+.sidebar {
+    width: 230px;
+    background: #ffffff;
+    border-left: 1px solid #ddd;
+    padding: 15px;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 13px;
+    margin-bottom: 8px;
+    border: none;
+    border-radius: 7px;
+    background: #eef2f7;
+    cursor: pointer;
+    text-align: right;
+    font-size: 15px;
+}
+
+.sidebar button:hover {
+    background: #dce7f5;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.stat {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 7px rgba(0,0,0,.07);
+}
+
+.stat strong {
+    display: block;
+    font-size: 30px;
+    margin-top: 10px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 11px;
+    margin: 6px 0 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+button.primary {
+    background: #17365d;
+    color: white;
+    border: none;
+    padding: 11px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button.danger {
+    background: #c0392b;
+    color: white;
+    border: none;
+    padding: 7px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: right;
+}
+
+th {
+    background: #17365d;
+    color: white;
+}
+
+.message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 6px;
+    display: none;
+}
+
+.success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+@media(max-width: 700px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-left: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .sidebar button {
+        display: inline-block;
+        width: 48%;
+    }
+
+    .content {
+        padding: 12px;
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 700px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-  <!-- 1. شاشة تسجيل الدخول -->
-  <div id="login-page">
-    <div class="login-card">
-      <h2>تسجيل دخول المدير 🔑</h2>
-      <input type="password" id="admin-pass" placeholder="أدخل كلمة مرور المدير">
-      <button onclick="loginAdmin()">دخول المنصة</button>
-      <p id="login-err" style="color:red; font-size:13px; margin-top:10px; display:none;">كلمة المرور غير صحيحة!</p>
-    </div>
-  </div>
+<header>
+    <h1>🏫 منصة المدرسة</h1>
+    <p>نظام إدارة المدرسة</p>
+</header>
 
-  <!-- 2. التطبيق ولوحة التحكم -->
-  <div id="admin-app">
-    <div class="sidebar">
-      <h2>منصة المدير</h2>
-      <button class="nav-btn active">إدارة الطلاب</button>
-      <button class="nav-btn" onclick="logout()">تسجيل الخروج 🚪</button>
-    </div>
+<div class="container">
 
-    <div class="main-content">
-      <h2>لوحة التحكم الإدارية</h2>
-      <br>
-      <div class="stats-grid">
-        <div class="stat-card">
-          <h4>إجمالي الطلاب</h4>
-          <p id="total-students">0</p>
-        </div>
-      </div>
+<aside class="sidebar">
 
-      <div class="data-section">
-        <h3>إدارة قائمة الطلاب</h3>
-        <br>
-        <div style="display:flex; gap:10px;">
-          <input type="text" id="new-name" placeholder="اسم الطالب الجديد..." style="padding:10px; border:1px solid #ccc; border-radius:8px; flex:1;">
-          <button class="btn-add" onclick="addStudent()">+ إضافة طالب</button>
-        </div>
+<button onclick="showSection('dashboard')">🏠 الرئيسية</button>
+<button onclick="showSection('students')">👨‍🎓 التلاميذ</button>
+<button onclick="showSection('teachers')">👨‍🏫 المعلمون</button>
+<button onclick="showSection('parents')">👪 الآباء</button>
+<button onclick="showSection('classes')">🏫 الأقسام</button>
+<button onclick="showSection('subjects')">📚 المواد</button>
+<button onclick="showSection('announcements')">📢 الإعلانات</button>
 
-        <table>
-          <thead>
-            <tr>
-              <th>المعرف (#)</th>
-              <th>اسم الطالب</th>
-              <th>الإجراء</th>
-            </tr>
-          </thead>
-          <tbody id="students-list">
-            <tr><td colspan="3">جاري التحميل...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+</aside>
 
-  <script>
-    const SUPABASE_URL = 'https://ucffhkoeystfqnqqtdae.supabase.co';
-    const SUPABASE_KEY = 'Sb_publishable_1AeKLnoJSybiFDCaaSnogA_DuoTdbCK';
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+<main class="content">
 
-    // كلمة مرور المدير المؤقتة (يمكنك تغييرها من هنا)
-    const ADMIN_PASSWORD = "admin";
+<!-- الرئيسية -->
+<section id="dashboard" class="section active">
 
-    function loginAdmin() {
-      const inputPass = document.getElementById('admin-pass').value;
-      if (inputPass === ADMIN_PASSWORD) {
-        document.getElementById('login-page').style.display = 'none';
-        document.getElementById('admin-app').style.display = 'flex';
-        loadStudents();
-      } else {
-        document.getElementById('login-err').style.display = 'block';
-      }
+<div class="card">
+<h2>لوحة التحكم</h2>
+<p>مرحبًا بك في منصة المدرسة.</p>
+</div>
+
+<div class="grid">
+
+<div class="stat">
+التلاميذ
+<strong id="studentCount">0</strong>
+</div>
+
+<div class="stat">
+المعلمون
+<strong id="teacherCount">0</strong>
+</div>
+
+<div class="stat">
+الآباء
+<strong id="parentCount">0</strong>
+</div>
+
+<div class="stat">
+المواد
+<strong id="subjectCount">0</strong>
+</div>
+
+<div class="stat">
+الإعلانات
+<strong id="announcementCount">0</strong>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- التلاميذ -->
+<section id="students" class="section">
+
+<div class="card">
+
+<h2>👨‍🎓 التلاميذ</h2>
+
+<div id="studentMessage" class="message"></div>
+
+<form id="studentForm">
+
+<label>رقم الطالب</label>
+<input id="student_id" required>
+
+<label>اسم الطالب</label>
+<input id="student_name" required>
+
+<label>تاريخ الميلاد</label>
+<input type="date" id="birth_date">
+
+<label>الجنس</label>
+<select id="gender">
+<option value="">اختر الجنس</option>
+<option value="ذكر">ذكر</option>
+<option value="أنثى">أنثى</option>
+</select>
+
+<label>اسم الولي</label>
+<input id="parent_name">
+
+<label>القسم</label>
+<input id="student_class">
+
+<button class="primary" type="submit">
+إضافة التلميذ
+</button>
+
+</form>
+
+</div>
+
+<div class="card">
+
+<h3>قائمة التلاميذ</h3>
+
+<div id="studentsTable"></div>
+
+</div>
+
+</section>
+
+
+<!-- المعلمون -->
+<section id="teachers" class="section">
+
+<div class="card">
+
+<h2>👨‍🏫 المعلمون</h2>
+
+<div id="teacherMessage" class="message"></div>
+
+<form id="teacherForm">
+
+<label>اسم المعلم</label>
+<input id="teacher_name" required>
+
+<label>التخصص</label>
+<input id="teacher_subject">
+
+<label>رقم الهاتف</label>
+<input id="teacher_phone">
+
+<button class="primary">
+إضافة المعلم
+</button>
+
+</form>
+
+</div>
+
+<div class="card">
+<div id="teachersTable"></div>
+</div>
+
+</section>
+
+
+<!-- الآباء -->
+<section id="parents" class="section">
+
+<div class="card">
+
+<h2>👪 الآباء</h2>
+
+<div id="parentMessage" class="message"></div>
+
+<form id="parentForm">
+
+<label>اسم الولي</label>
+<input id="parent_full_name" required>
+
+<label>رقم الهاتف</label>
+<input id="parent_phone">
+
+<label>البريد الإلكتروني</label>
+<input id="parent_email">
+
+<button class="primary">
+إضافة ولي
+</button>
+
+</form>
+
+</div>
+
+<div class="card">
+<div id="parentsTable"></div>
+</div>
+
+</section>
+
+
+<!-- الأقسام -->
+<section id="classes" class="section">
+
+<div class="card">
+
+<h2>🏫 الأقسام</h2>
+
+<div id="classMessage" class="message"></div>
+
+<form id="classForm">
+
+<label>اسم القسم</label>
+<input id="class_name" required>
+
+<label>المستوى</label>
+<input id="class_level">
+
+<button class="primary">
+إضافة قسم
+</button>
+
+</form>
+
+</div>
+
+<div class="card">
+<div id="classesTable"></div>
+</div>
+
+</section>
+
+
+<!-- المواد -->
+<section id="subjects" class="section">
+
+<div class="card">
+
+<h2>📚 المواد</h2>
+
+<div id="subjectMessage" class="message"></div>
+
+<form id="subjectForm">
+
+<label>اسم المادة</label>
+<input id="subject_name" required>
+
+<label>المعامل</label>
+<input type="number" id="subject_coefficient">
+
+<button class="primary">
+إضافة مادة
+</button>
+
+</form>
+
+</div>
+
+<div class="card">
+<div id="subjectsTable"></div>
+</div>
+
+</section>
+
+
+<!-- الإعلانات -->
+<section id="announcements" class="section">
+
+<div class="card">
+
+<h2>📢 الإعلانات</h2>
+
+<div id="announcementMessage" class="message"></div>
+
+<form id="announcementForm">
+
+<label>عنوان الإعلان</label>
+<input id="announcement_title" required>
+
+<label>محتوى الإعلان</label>
+<textarea id="announcement_content" rows="5" required></textarea>
+
+<button class="primary">
+نشر الإعلان
+</button>
+
+</form>
+
+</div>
+
+<div class="card">
+<div id="announcementsTable"></div>
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+"https://ucffhkoeystfqnqqtdae.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_1AeKLnoJSybiFDCaaSnogA_DuoTdbCK";
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+/* =====================================================
+   التنقل
+===================================================== */
+
+function showSection(id) {
+
+    document.querySelectorAll(".section")
+        .forEach(section => {
+            section.classList.remove("active");
+        });
+
+    document.getElementById(id)
+        .classList.add("active");
+
+    if(id === "dashboard") loadDashboard();
+    if(id === "students") loadStudents();
+    if(id === "teachers") loadTeachers();
+    if(id === "parents") loadParents();
+    if(id === "classes") loadClasses();
+    if(id === "subjects") loadSubjects();
+    if(id === "announcements") loadAnnouncements();
+}
+
+
+/* =====================================================
+   الرسائل
+===================================================== */
+
+function message(id, text, success = true) {
+
+    const box = document.getElementById(id);
+
+    box.innerText = text;
+
+    box.className =
+        "message " + (success ? "success" : "error");
+
+    box.style.display = "block";
+
+    setTimeout(() => {
+        box.style.display = "none";
+    }, 4000);
+}
+
+
+/* =====================================================
+   التلاميذ
+===================================================== */
+
+async function loadStudents() {
+
+    const { data, error } =
+        await supabaseClient
+        .from("students")
+        .select("*")
+        .order("student_name");
+
+    if(error) {
+
+        document.getElementById("studentsTable").innerHTML =
+            `<p class="error">خطأ: ${error.message}</p>`;
+
+        return;
     }
 
-    function logout() {
-      document.getElementById('login-page').style.display = 'flex';
-      document.getElementById('admin-app').style.display = 'none';
+    let html = `
+    <table>
+    <tr>
+        <th>رقم الطالب</th>
+        <th>اسم الطالب</th>
+        <th>تاريخ الميلاد</th>
+        <th>الجنس</th>
+        <th>اسم الولي</th>
+        <th>القسم</th>
+        <th>حذف</th>
+    </tr>
+    `;
+
+    data.forEach(student => {
+
+        html += `
+        <tr>
+            <td>${student.student_id ?? ""}</td>
+            <td>${student.student_name ?? ""}</td>
+            <td>${student.birth_date ?? ""}</td>
+            <td>${student.gender ?? ""}</td>
+            <td>${student.parent_name ?? ""}</td>
+            <td>${student.class ?? ""}</td>
+            <td>
+                <button class="danger"
+                onclick="deleteStudent('${student.student_id}')">
+                حذف
+                </button>
+            </td>
+        </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    document.getElementById("studentsTable").innerHTML = html;
+
+    document.getElementById("studentCount").innerText =
+        data.length;
+}
+
+
+document.getElementById("studentForm")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const record = {
+
+        student_id:
+            document.getElementById("student_id").value.trim(),
+
+        student_name:
+            document.getElementById("student_name").value.trim(),
+
+        birth_date:
+            document.getElementById("birth_date").value || null,
+
+        gender:
+            document.getElementById("gender").value || null,
+
+        parent_name:
+            document.getElementById("parent_name").value.trim() || null,
+
+        class:
+            document.getElementById("student_class").value.trim() || null
+    };
+
+    const { error } =
+        await supabaseClient
+        .from("students")
+        .insert([record]);
+
+    if(error) {
+
+        message(
+            "studentMessage",
+            "حدث خطأ: " + error.message,
+            false
+        );
+
+        return;
     }
 
-    async function loadStudents() {
-      const { data, count } = await _supabase.from('students').select('*', { count: 'exact' });
-      document.getElementById('total-students').innerText = count || (data ? data.length : 0);
+    message(
+        "studentMessage",
+        "تم تسجيل التلميذ بنجاح."
+    );
 
-      const tbody = document.getElementById('students-list');
-      if (data && data.length > 0) {
-        tbody.innerHTML = data.map(st => `
-          <tr>
-            <td>#${st.id}</td>
-            <td>${st.full_name || 'بدون اسم'}</td>
-            <td><button class="btn-del" onclick="deleteStudent(${st.id})">حذف 🗑️</button></td>
-          </tr>
-        `).join('');
-      } else {
-        tbody.innerHTML = '<tr><td colspan="3">لا يوجد طلاب حتى الآن.</td></tr>';
-      }
+    this.reset();
+
+    loadStudents();
+    loadDashboard();
+});
+
+
+async function deleteStudent(id) {
+
+    if(!confirm("هل تريد حذف هذا التلميذ؟")) return;
+
+    const { error } =
+        await supabaseClient
+        .from("students")
+        .delete()
+        .eq("student_id", id);
+
+    if(error) {
+
+        alert("خطأ: " + error.message);
+        return;
     }
 
-    async function addStudent() {
-      const name = document.getElementById('new-name').value.trim();
-      if (!name) return alert('اكتب اسم الطالب أولاً');
-      
-      await _supabase.from('students').insert([{ full_name: name }]);
-      document.getElementById('new-name').value = '';
-      loadStudents();
+    loadStudents();
+    loadDashboard();
+}
+
+
+/* =====================================================
+   المعلمون
+===================================================== */
+
+async function loadTeachers() {
+
+    const { data, error } =
+        await supabaseClient
+        .from("teachers")
+        .select("*");
+
+    if(error) {
+
+        document.getElementById("teachersTable").innerHTML =
+            `<p>خطأ: ${error.message}</p>`;
+
+        return;
     }
 
-    async function deleteStudent(id) {
-      if (confirm('هل تريد حذف هذا الطالب؟')) {
-        await _supabase.from('students').delete().eq('id', id);
-        loadStudents();
-      }
+    let html = `
+    <table>
+    <tr>
+        <th>الاسم</th>
+        <th>التخصص</th>
+        <th>الهاتف</th>
+    </tr>
+    `;
+
+    data.forEach(row => {
+
+        html += `
+        <tr>
+            <td>${row.teacher_name ?? row.name ?? ""}</td>
+            <td>${row.teacher_subject ?? row.subject ?? ""}</td>
+            <td>${row.teacher_phone ?? row.phone ?? ""}</td>
+        </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    document.getElementById("teachersTable").innerHTML = html;
+
+    document.getElementById("teacherCount").innerText =
+        data.length;
+}
+
+
+document.getElementById("teacherForm")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const record = {
+
+        teacher_name:
+            document.getElementById("teacher_name").value.trim(),
+
+        teacher_subject:
+            document.getElementById("teacher_subject").value.trim(),
+
+        teacher_phone:
+            document.getElementById("teacher_phone").value.trim()
+    };
+
+    const { error } =
+        await supabaseClient
+        .from("teachers")
+        .insert([record]);
+
+    if(error) {
+
+        message(
+            "teacherMessage",
+            "حدث خطأ: " + error.message,
+            false
+        );
+
+        return;
     }
-  </script>
+
+    message(
+        "teacherMessage",
+        "تمت إضافة المعلم بنجاح."
+    );
+
+    this.reset();
+
+    loadTeachers();
+    loadDashboard();
+});
+
+
+/* =====================================================
+   الآباء
+===================================================== */
+
+async function loadParents() {
+
+    const { data, error } =
+        await supabaseClient
+        .from("parents")
+        .select("*");
+
+    if(error) {
+
+        document.getElementById("parentsTable").innerHTML =
+            `<p>خطأ: ${error.message}</p>`;
+
+        return;
+    }
+
+    let html = `
+    <table>
+    <tr>
+        <th>اسم الولي</th>
+        <th>الهاتف</th>
+        <th>البريد الإلكتروني</th>
+    </tr>
+    `;
+
+    data.forEach(row => {
+
+        html += `
+        <tr>
+            <td>${row.parent_full_name ?? row.name ?? ""}</td>
+            <td>${row.parent_phone ?? row.phone ?? ""}</td>
+            <td>${row.parent_email ?? row.email ?? ""}</td>
+        </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    document.getElementById("parentsTable").innerHTML = html;
+
+    document.getElementById("parentCount").innerText =
+        data.length;
+}
+
+
+document.getElementById("parentForm")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const record = {
+
+        parent_full_name:
+            document.getElementById("parent_full_name").value.trim(),
+
+        parent_phone:
+            document.getElementById("parent_phone").value.trim(),
+
+        parent_email:
+            document.getElementById("parent_email").value.trim()
+    };
+
+    const { error } =
+        await supabaseClient
+        .from("parents")
+        .insert([record]);
+
+    if(error) {
+
+        message(
+            "parentMessage",
+            "حدث خطأ: " + error.message,
+            false
+        );
+
+        return;
+    }
+
+    message(
+        "parentMessage",
+        "تمت إضافة الولي بنجاح."
+    );
+
+    this.reset();
+
+    loadParents();
+    loadDashboard();
+});
+
+
+/* =====================================================
+   الأقسام
+===================================================== */
+
+async function loadClasses() {
+
+    const { data, error } =
+        await supabaseClient
+        .from("classes")
+        .select("*");
+
+    if(error) {
+
+        document.getElementById("classesTable").innerHTML =
+            `<p>خطأ: ${error.message}</p>`;
+
+        return;
+    }
+
+    let html = `
+    <table>
+    <tr>
+        <th>القسم</th>
+        <th>المستوى</th>
+    </tr>
+    `;
+
+    data.forEach(row => {
+
+        html += `
+        <tr>
+            <td>${row.class_name ?? row.name ?? ""}</td>
+            <td>${row.class_level ?? row.level ?? ""}</td>
+        </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    document.getElementById("classesTable").innerHTML =
+        html;
+}
+
+
+document.getElementById("classForm")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const record = {
+
+        class_name:
+            document.getElementById("class_name").value.trim(),
+
+        class_level:
+            document.getElementById("class_level").value.trim()
+    };
+
+    const { error } =
+        await supabaseClient
+        .from("classes")
+        .insert([record]);
+
+    if(error) {
+
+        message(
+            "classMessage",
+            "حدث خطأ: " + error.message,
+            false
+        );
+
+        return;
+    }
+
+    message(
+        "classMessage",
+        "تمت إضافة القسم بنجاح."
+    );
+
+    this.reset();
+
+    loadClasses();
+});
+
+
+/* =====================================================
+   المواد
+===================================================== */
+
+async function loadSubjects() {
+
+    const { data, error } =
+        await supabaseClient
+        .from("subjects")
+        .select("*");
+
+    if(error) {
+
+        document.getElementById("subjectsTable").innerHTML =
+            `<p>خطأ: ${error.message}</p>`;
+
+        return;
+    }
+
+    let html = `
+    <table>
+    <tr>
+        <th>المادة</th>
+        <th>المعامل</th>
+    </tr>
+    `;
+
+    data.forEach(row => {
+
+        html += `
+        <tr>
+            <td>${row.subject_name ?? row.name ?? ""}</td>
+            <td>${row.subject_coefficient ?? row.coefficient ?? ""}</td>
+        </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    document.getElementById("subjectsTable").innerHTML =
+        html;
+
+    document.getElementById("subjectCount").innerText =
+        data.length;
+}
+
+
+document.getElementById("subjectForm")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const record = {
+
+        subject_name:
+            document.getElementById("subject_name").value.trim(),
+
+        subject_coefficient:
+            document.getElementById("subject_coefficient").value || null
+    };
+
+    const { error } =
+        await supabaseClient
+        .from("subjects")
+        .insert([record]);
+
+    if(error) {
+
+        message(
+            "subjectMessage",
+            "حدث خطأ: " + error.message,
+            false
+        );
+
+        return;
+    }
+
+    message(
+        "subjectMessage",
+        "تمت إضافة المادة بنجاح."
+    );
+
+    this.reset();
+
+    loadSubjects();
+    loadDashboard();
+});
+
+
+/* =====================================================
+   الإعلانات
+===================================================== */
+
+async function loadAnnouncements() {
+
+    const { data, error } =
+        await supabaseClient
+        .from("announcements")
+        .select("*");
+
+    if(error) {
+
+        document.getElementById("announcementsTable").innerHTML =
+            `<p>خطأ: ${error.message}</p>`;
+
+        return;
+    }
+
+    let html = `
+    <table>
+    <tr>
+        <th>العنوان</th>
+        <th>المحتوى</th>
+    </tr>
+    `;
+
+    data.forEach(row => {
+
+        html += `
+        <tr>
+            <td>${row.announcement_title ?? row.title ?? ""}</td>
+            <td>${row.announcement_content ?? row.content ?? ""}</td>
+        </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    document.getElementById("announcementsTable").innerHTML =
+        html;
+
+    document.getElementById("announcementCount").innerText =
+        data.length;
+}
+
+
+document.getElementById("announcementForm")
+.addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const record = {
+
+        announcement_title:
+            document.getElementById("announcement_title").value.trim(),
+
+        announcement_content:
+            document.getElementById("announcement_content").value.trim()
+    };
+
+    const { error } =
+        await supabaseClient
+        .from("announcements")
+        .insert([record]);
+
+    if(error) {
+
+        message(
+            "announcementMessage",
+            "حدث خطأ: " + error.message,
+            false
+        );
+
+        return;
+    }
+
+    message(
+        "announcementMessage",
+        "تم نشر الإعلان بنجاح."
+    );
+
+    this.reset();
+
+    loadAnnouncements();
+    loadDashboard();
+});
+
+
+/* =====================================================
+   لوحة التحكم
+===================================================== */
+
+async function countTable(table, element) {
+
+    const { count, error } =
+        await supabaseClient
+        .from(table)
+        .select("*", {
+            count: "exact",
+            head: true
+        });
+
+    if(!error) {
+        document.getElementById(element).innerText =
+            count ?? 0;
+    }
+}
+
+
+async function loadDashboard() {
+
+    countTable("students", "studentCount");
+    countTable("teachers", "teacherCount");
+    countTable("parents", "parentCount");
+    countTable("subjects", "subjectCount");
+    countTable("announcements", "announcementCount");
+}
+
+
+/* =====================================================
+   التشغيل عند فتح الموقع
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    loadDashboard();
+
+    loadStudents();
+    loadTeachers();
+    loadParents();
+    loadClasses();
+    loadSubjects();
+    loadAnnouncements();
+
+});
+
+</script>
+
 </body>
-</html>
+  </html>
