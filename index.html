@@ -271,6 +271,25 @@
 
   console.log('تم الربط بـ Supabase بنجاح!');
 </script>
+<script>
+  // تفعيل جلب البيانات وعرضها في الجدول
+  async function loadData() {
+    // استبدل 'subjects' باسم جدول المواد لديك في Supabase
+    const { data: subjects, error } = await supabase
+      .from('subjects')
+      .select('*');
+
+    if (error) {
+      console.error('خطأ في جلب البيانات:', error);
+      return;
+    }
+
+    // تحديث الإحصائيات (مثال: عدد المواد)
+    // يمكن ربط عناصر HTML بالقيم المستلمة
+  }
+
+  loadData();
+</script>
 
 </body>
 </html>
